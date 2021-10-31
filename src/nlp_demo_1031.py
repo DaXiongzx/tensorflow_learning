@@ -5,6 +5,8 @@ import jsonlines
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 tf.device('/gpu:0')
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 vocab_size = 1000
 embedding_dim = 16
@@ -41,6 +43,9 @@ testing_padded = pad_sequences(testing_sequences,maxlen=max_length,padding=paddi
 
 model = tf.keras.Sequential([
     tf.keras.layers.Embedding(vocab_size,embedding_dim,input_length=max_length),
+    # tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64,return_sequences=True)),
+    # tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
+    tf.keras.layers.Conv1D(128,5,activation='relu'),
     tf.keras.layers.GlobalAveragePooling1D(),
     tf.keras.layers.Dense(24,activation='relu'),
     tf.keras.layers.Dense(1,activation='sigmoid')
